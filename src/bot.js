@@ -30,7 +30,7 @@ async function populateActualPlayers(){
     try {
         let finalArray = await Promise.all(db.players.map(async(player) =>{
             let dataFromTwitter = await getUserTwitter(player.name)
-            let actualPlayer = new Player(dataFromTwitter, player.alive, player.chanceToStayAlive, player.luck)
+            let actualPlayer = new Player(dataFromTwitter, player.alive, player.luck, player.strength, player.kills)
             return actualPlayer
         }));
         return finalArray
@@ -66,10 +66,52 @@ function battle(){
     playersSelectedToFight.push(playersAlive[playerIndexOne])
     playersSelectedToFight.push(playersAlive[playerIndexTwo])
 
+    /*
+            "name": "mangelrogel",
+            "alive": false,
+            "luck": 100,
+            "strength": 20,
+            "team" : "Verde",
+            "kills" : 0
+    */
     //RPG AREA
+    console.log()
+    let actualRatioToWinPlayer0 = 0
+    let actualRatioToWinPlayer1 = 0
+    if(playersSelectedToFight[0].strength >= playersSelectedToFight[1].strength){
+        let ratioStrength = playersSelectedToFight[0].strength / playersSelectedToFight[1].strength
+        actualRatioToWinPlayer0 += Number.parseFloat(ratioStrength.toFixed(2))
+        console.log(`fuerza p1: ${playersSelectedToFight[0].strength}, fuerza p2: ${playersSelectedToFight[1].strength} `)
+        console.log(actualRatioToWinPlayer0)
+    }else{
+        let ratioStrength = playersSelectedToFight[1].strength / playersSelectedToFight[0].strength
+        actualRatioToWinPlayer1 += Number.parseFloat(ratioStrength.toFixed(2))
+        console.log(`fuerza p1: ${playersSelectedToFight[0].strength}, fuerza p2: ${playersSelectedToFight[1].strength} `)
+        console.log(actualRatioToWinPlayer1)
+    }
+
+    if(playersSelectedToFight[0].kills >= playersSelectedToFight[1].kills){
+        let ratioKills = playersSelectedToFight[0].kills / playersSelectedToFight[1].kills
+        //console.log(ratioKills)
+        actualRatioToWinPlayer0 += Number.parseFloat(ratioKills.toFixed(2))
+        console.log(`kills p1: ${playersSelectedToFight[0].kills}, kills p2: ${playersSelectedToFight[1].kills} `)
+        console.log(actualRatioToWinPlayer0)
+    }else{
+        let ratioKills = playersSelectedToFight[1].strength / playersSelectedToFight[0].kills
+        //console.log(ratioKills)
+        actualRatioToWinPlayer1 += Number.parseFloat(ratioKills.toFixed(2))
+        console.log(`kills p1: ${playersSelectedToFight[0].kills}, kills p2: ${playersSelectedToFight[1].kills} `)
+        console.log(actualRatioToWinPlayer1)
+    }
+
+
+
 
     //RPG AREA
 
+
+    let winner = null
+    let losser = null
     //sumar al ganador 1kill
     //setear alive del perdedor false.
     return {
@@ -82,7 +124,6 @@ function battle(){
             "avatarProfileUrl" : playersSelectedToFight[1].twitter.profile_image_url
         }
     }
-    
 }
     
 
@@ -91,11 +132,11 @@ function battle(){
     actualPlayers = dataFromTwitter
     let playersToFight = battle()
 
-    
-    console.log(playersToFight)
-    await createImage.ProcessAll(playersToFight.winner.avatarProfileUrl,playersToFight.losser.avatarProfileUrl,playersToFight.winner.screenName,playersToFight.losser.screenName, () => {
+    //console.log(getAlivePlayers())
+    //console.log(playersToFight)
+    /*await createImage.ProcessAll(playersToFight.winner.avatarProfileUrl,playersToFight.losser.avatarProfileUrl,playersToFight.winner.screenName,playersToFight.losser.screenName, () => {
         console.log("Picture created.")
-    })
+    })*/
     
 })();
 

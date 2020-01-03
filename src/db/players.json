@@ -2,39 +2,35 @@
     "players": [
         {
             "name": "LVPibai",
-            "chanceToStayAlive": 100,
             "alive": true,
             "luck": 100,
-            "strength": 20,
+            "strength": 55,
             "team" : "Rojo",
-            "kills" : 0
+            "kills" : 24
         },
         {
             "name": "Rubiu5",
-            "chanceToStayAlive": 100,
             "alive": true,
             "luck": 100,
-            "strength": 20,
+            "strength": 32,
             "team" : "Rojo",
-            "kills" : 0
+            "kills" : 9
         },
         {
             "name": "LOLiTOFDEZ",
-            "chanceToStayAlive": 100,
             "alive": true,
             "luck": 100,
-            "strength": 20,
+            "strength": 6,
             "team" : "Verde",
-            "kills" : 0
+            "kills" : 1
         },
         {
             "name": "mangelrogel",
-            "chanceToStayAlive": 100,
             "alive": false,
             "luck": 100,
-            "strength": 20,
+            "strength": 87,
             "team" : "Verde",
-            "kills" : 0
+            "kills" : 5
         }
     ]
 }

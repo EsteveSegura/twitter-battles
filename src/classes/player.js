@@ -1,22 +1,14 @@
 class Player {
-    constructor(userTwitter, alive, chanceToStayAlive,luck){
+    constructor(userTwitter, alive, luck, strength, kills){
         this.twitter = userTwitter,
         this.alive = alive,
-        this.chanceToStayAlive =chanceToStayAlive
-        this.luck = luck
+        this.luck = luck,
+        this.strength = strength,
+        this.kills = kills
     }
 
-    stayAliveVsEnemy(enemy){
-        if(enemy.chanceToStayAlive > this.chanceToStayAlive){
-            //lose
-        }else{
-            //win
-        }
-    }
 
-    getHealth(){
-        return this.health
-    }
+   
 }
 
 module.exports =  Player ;
