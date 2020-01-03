@@ -1,0 +1,28 @@
+{
+    "players": [
+        {
+            "name": "LVPibai",
+            "chanceToStayAlive": 100,
+            "alive": true,
+            "luck": 100
+        },
+        {
+            "name": "Rubiu5",
+            "chanceToStayAlive": 100,
+            "alive": true,
+            "luck": 100
+        },
+        {
+            "name": "LOLiTOFDEZ",
+            "chanceToStayAlive": 100,
+            "alive": true,
+            "luck": 100
+        },
+        {
+            "name": "mangelrogel",
+            "chanceToStayAlive": 100,
+            "alive": true,
+            "luck": 100
+        }
+    ]
+}
