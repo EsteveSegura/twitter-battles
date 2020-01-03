@@ -4,8 +4,8 @@
             "name": "LVPibai",
             "alive": true,
             "luck": 0,
-            "strength": 1,
-            "kills" : 1,
+            "strength": 6,
+            "kills" : 0,
             "team" : "Rojo"
         },
         {
@@ -13,23 +13,23 @@
             "alive": true,
             "luck": 12,
             "strength": 32,
-            "kills" : 1,
+            "kills" : 0,
             "team" : "Rojo"
         },
         {
             "name": "LOLiTOFDEZ",
-            "alive": false,
+            "alive": true,
             "luck": 2,
             "strength": 26,
-            "kills" : 1,
+            "kills" : 0,
             "team" : "Verde"
         },
         {
             "name": "mangelrogel",
-            "alive": false,
+            "alive": true,
             "luck": 5,
             "strength": 87,
-            "kills" : 1,
+            "kills" : 0,
             "team" : "Verde"
         }
     ]

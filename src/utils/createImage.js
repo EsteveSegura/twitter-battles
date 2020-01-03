@@ -108,4 +108,4 @@ function deleteAllDownloadedImages(directory){
 
 
 
-module.exports = { ProcessAll, defaultErrorAvatarPicture };
+module.exports = { ProcessAll, defaultErrorAvatarPicture, deleteAllDownloadedImages };
