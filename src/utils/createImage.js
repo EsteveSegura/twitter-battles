@@ -59,7 +59,7 @@ async function createImage(imgWinner,imgLosser,userTwitterWinner,userTwitterLoss
         await data[0].composite(data[3].greyscale(), 990,198)//Loser
         await data[0].composite(data[1],1,1)//X de losser
 
-        await data[0].write('./upload.png', function(){
+        await data[0].write('./uploads/upload.png', function(){
             cb()
         })
     });
@@ -68,7 +68,7 @@ async function createImage(imgWinner,imgLosser,userTwitterWinner,userTwitterLoss
 async function downloadIMG(urlImg,pushToArray){
     const options = {
         url: urlImg,
-        dest: './assets/'                  
+        dest: './tmpAssets/'                  
     }
 
     try {
@@ -77,7 +77,6 @@ async function downloadIMG(urlImg,pushToArray){
         dataFile = {
             filepath: filename
         }
-        //console.log(dataFile)
         pushToArray.push(dataFile)
 
     } catch (e) {
@@ -88,9 +87,8 @@ async function downloadIMG(urlImg,pushToArray){
 async function ProcessAll(urlImageWinner,urlImageLosser,userTwitterWinner,userTwitterLosser,cb){
     await downloadIMG(convertPhotoUrlTo400x400(urlImageWinner),datos)
     await downloadIMG(convertPhotoUrlTo400x400(urlImageLosser),datos)
-    console.log(datos)
     await createImage(datos[0].filepath,datos[1].filepath,userTwitterWinner,userTwitterLosser,function(){
-        deleteAllDownloadedImages('./uploads')
+        deleteAllDownloadedImages('./tmpAssets')
     })
     datos = []
     cb();

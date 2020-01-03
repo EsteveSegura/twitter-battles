@@ -4,25 +4,37 @@
             "name": "LVPibai",
             "chanceToStayAlive": 100,
             "alive": true,
-            "luck": 100
+            "luck": 100,
+            "strength": 20,
+            "team" : "Rojo",
+            "kills" : 0
         },
         {
             "name": "Rubiu5",
             "chanceToStayAlive": 100,
             "alive": true,
-            "luck": 100
+            "luck": 100,
+            "strength": 20,
+            "team" : "Rojo",
+            "kills" : 0
         },
         {
             "name": "LOLiTOFDEZ",
             "chanceToStayAlive": 100,
             "alive": true,
-            "luck": 100
+            "luck": 100,
+            "strength": 20,
+            "team" : "Verde",
+            "kills" : 0
         },
         {
             "name": "mangelrogel",
             "chanceToStayAlive": 100,
-            "alive": true,
-            "luck": 100
+            "alive": false,
+            "luck": 100,
+            "strength": 20,
+            "team" : "Verde",
+            "kills" : 0
         }
     ]
 }

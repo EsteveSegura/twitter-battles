@@ -15,12 +15,13 @@ let T = new Twit({
 
 function getUserTwitter(name){
     return new Promise(async(resolve,reject) => {
-        await T.get('statuses/user_timeline', { Name: 'girlazo'}, function(err, data, response) {
+        await T.get('statuses/user_timeline', { screen_name: name}, function(err, data, response) {
             if(err){
                 reject(err)
             }
 
-            resolve(data);
+            resolve(data[0].user);
+
         })
     })
 }
@@ -28,8 +29,8 @@ function getUserTwitter(name){
 async function populateActualPlayers(){
     try {
         let finalArray = await Promise.all(db.players.map(async(player) =>{
-            let dataGromTwitter = await getUserTwitter(player.name)
-            let actualPlayer = new Player(dataGromTwitter, true, player.chanceToStayAlive, player.luck)
+            let dataFromTwitter = await getUserTwitter(player.name)
+            let actualPlayer = new Player(dataFromTwitter, player.alive, player.chanceToStayAlive, player.luck)
             return actualPlayer
         }));
         return finalArray
@@ -38,35 +39,65 @@ async function populateActualPlayers(){
     }
 }
 
+//array filter to get only alive people. "alivePlayers"
+function getAlivePlayers(){
+    let alive = actualPlayers.filter((player) => {
+        if(player.alive){
+            return player;
+        }
+    });
+    return alive;
+}
+
+
 
 //REFACTOR PLS
 function battle(){
     let playersSelectedToFight = []
-    let playerIndexOne = utils.getRandomIntBeetweenNumbers(0,actualPlayers.length-1)
-    let playerIndexTwo = utils.getRandomIntBeetweenNumbers(0,actualPlayers.length-1)
+    let playersAlive = getAlivePlayers();
 
-    while(playerIndexOne === playerIndexTwo){
-        playerIndexOne = utils.getRandomIntBeetweenNumbers(0,actualPlayers.length-1)
+    let playerIndexOne = utils.getRandomIntBeetweenNumbers(0,getAlivePlayers.length-1)
+    let playerIndexTwo = utils.getRandomIntBeetweenNumbers(0,playersAlive.length-1)
+
+    while(playerIndexOne === playerIndexTwo ){
+        playerIndexOne = utils.getRandomIntBeetweenNumbers(0,playersAlive.length-1)
     }
+    
+    playersSelectedToFight.push(playersAlive[playerIndexOne])
+    playersSelectedToFight.push(playersAlive[playerIndexTwo])
 
-    playersSelectedToFight.push(actualPlayers[playerIndexOne])
-    playersSelectedToFight.push(actualPlayers[playerIndexTwo])
+    //RPG AREA
 
-    console.log(playersSelectedToFight)
+    //RPG AREA
 
-    //RPG AREA && LUCK
-
+    //sumar al ganador 1kill
+    //setear alive del perdedor false.
+    return {
+        "winner" : {
+            "screenName" : playersSelectedToFight[0].twitter.screen_name,
+            "avatarProfileUrl" : playersSelectedToFight[0].twitter.profile_image_url
+        },
+        "losser":{
+            "screenName" : playersSelectedToFight[1].twitter.screen_name,
+            "avatarProfileUrl" : playersSelectedToFight[1].twitter.profile_image_url
+        }
+    }
     
 }
     
 
 (async () => {
-    await createImage.ProcessAll('https://pbs.twimg.com/profile_images/1205108717341093895/aBBs2ypg_400x400.jpg','https://pbs.twimg.com/profile_images/955940564670836736/HL8DBsUd_400x400.jpg','rad1','rad2', () => {
-        console.log("s")
-    })
-    //let dataFromTwitter = await populateActualPlayers();
-    //actualPlayers = dataFromTwitter
-    //battle()
+    let dataFromTwitter = await populateActualPlayers();
+    actualPlayers = dataFromTwitter
+    let playersToFight = battle()
+
     
-    //console.log(actualPlayers)
+    console.log(playersToFight)
+    await createImage.ProcessAll(playersToFight.winner.avatarProfileUrl,playersToFight.losser.avatarProfileUrl,playersToFight.winner.screenName,playersToFight.losser.screenName, () => {
+        console.log("Picture created.")
+    })
+    
 })();
+
+
+
