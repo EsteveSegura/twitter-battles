@@ -3,6 +3,7 @@ const Player = require('./classes/player');
 const Twit = require('twit')
 const db = require('./db/players.json')
 const utils = require('./utils/utils');
+const createImage = require('./utils/createImage');
 let actualPlayers = []
 
 let T = new Twit({
@@ -60,9 +61,12 @@ function battle(){
     
 
 (async () => {
-    let dataFromTwitter = await populateActualPlayers();
-    actualPlayers = dataFromTwitter
-    battle()
+    await createImage.ProcessAll('https://pbs.twimg.com/profile_images/1205108717341093895/aBBs2ypg_400x400.jpg','https://pbs.twimg.com/profile_images/955940564670836736/HL8DBsUd_400x400.jpg','rad1','rad2', () => {
+        console.log("s")
+    })
+    //let dataFromTwitter = await populateActualPlayers();
+    //actualPlayers = dataFromTwitter
+    //battle()
     
-    console.log(actualPlayers)
+    //console.log(actualPlayers)
 })();
