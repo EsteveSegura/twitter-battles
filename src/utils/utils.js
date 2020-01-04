@@ -7,6 +7,7 @@ function getRandomIntBeetweenNumbers(min,max){
 function normalizeData(val, min, max){
     let valFixed = val.toFixed(2)
     let maxMin = max-min
+    return val
     return ((Number.parseFloat(valFixed) - parseInt(min) )/ maxMin );
 }
 

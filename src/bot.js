@@ -5,6 +5,7 @@ const fs = require('fs')
 const db = require('./db/players.json')
 const utils = require('./utils/utils');
 const createImage = require('./utils/createImage');
+const timeManager = require('./utils/timeManager');
 let actualPlayers = []
 
 /*
@@ -29,9 +30,7 @@ function getUserTwitter(name) {
             if (err) {
                 reject(err)
             }
-
             resolve(data[0].user);
-
         })
     })
 }
@@ -40,7 +39,7 @@ async function populateActualPlayers() {
     try {
         let finalArray = await Promise.all(db.players.map(async (player) => {
             let dataFromTwitter = await getUserTwitter(player.name)
-            let actualPlayer = new Player(dataFromTwitter, player.alive, player.luck, player.strength, player.kills,player.name)
+            let actualPlayer = new Player(dataFromTwitter, player.alive, player.luck, player.strength, player.kills,player.name, player.defense)
             return actualPlayer
         }));
         return finalArray
@@ -75,43 +74,87 @@ function battle() {
 
     playersSelectedToFight.push(playersAlive[playerIndexOne])
     playersSelectedToFight.push(playersAlive[playerIndexTwo])
+    /*
+    PlayersSelectsToFight:
+    {
+        class: player,
+        ratiotowin: 0
+    }
+    */ 
+
 
     //RPG AREA
     let actualRatioToWinPlayer0 = 0
     let actualRatioToWinPlayer1 = 0
 
     //Strength
-    let ratioStrengthPlayer0 = playersSelectedToFight[0].strength / playersSelectedToFight[1].strength
+    let ratioStrengthPlayer0 = playersSelectedToFight[0].strength / 100//playersSelectedToFight[1].strength
     actualRatioToWinPlayer0 = actualRatioToWinPlayer0 + ratioStrengthPlayer0
 
-    let ratioStrengthPlayer1 = playersSelectedToFight[1].strength / playersSelectedToFight[0].strength
+    let ratioStrengthPlayer1 = playersSelectedToFight[1].strength / 100//playersSelectedToFight[0].strength
     actualRatioToWinPlayer1 = actualRatioToWinPlayer1 + ratioStrengthPlayer1
 
+    console.log('--- Ratio solo fuerza ---');
+    console.log(ratioStrengthPlayer0 + " Jugador:" + playersSelectedToFight[0].twitter.screen_name)
+    console.log(ratioStrengthPlayer1 + " Jugador:" + playersSelectedToFight[1].twitter.screen_name)
+
+
     //Kills
-    let ratioKilssPlayer0 = playersSelectedToFight[0].kills / playersSelectedToFight[1].kills 
-    actualRatioToWinPlayer0 = actualRatioToWinPlayer0 + ratioKilssPlayer0
+    let bonusPerKill0 = playersSelectedToFight[0].kills * 0.05;
+    actualRatioToWinPlayer0 = actualRatioToWinPlayer0 + bonusPerKill0;
 
-    let ratioKilssPlayer1 = playersSelectedToFight[1].kills / playersSelectedToFight[0].kills 
-    actualRatioToWinPlayer1 = actualRatioToWinPlayer1 + ratioKilssPlayer1
+    let bonusPerKill1 = playersSelectedToFight[1].kills * 0.05;
+    actualRatioToWinPlayer1 = actualRatioToWinPlayer1 + bonusPerKill1;
 
+    console.log('--- Ratio solo kills ---');
+    console.log(bonusPerKill0 + " Jugador:" + playersSelectedToFight[0].twitter.screen_name)
+    console.log(bonusPerKill1 + " Jugador:" + playersSelectedToFight[1].twitter.screen_name)
+    
+    
+    console.log("Defense de: " + playersSelectedToFight[0].twitter.screen_name + " " +playersSelectedToFight[0].getRandomDefense() / 100 )
+    console.log("Defense de: " + playersSelectedToFight[1].twitter.screen_name + " " +playersSelectedToFight[1].getRandomDefense() / 100 )
+    
+    actualRatioToWinPlayer0 = actualRatioToWinPlayer0 - (playersSelectedToFight[1].getRandomDefense() / 100)
+    actualRatioToWinPlayer1 = actualRatioToWinPlayer1 - (playersSelectedToFight[0].getRandomDefense() / 100)
+
+    
+    
     //Normalize
     let normalizedData0 = utils.normalizeData(actualRatioToWinPlayer0, 0, 200)
     let normalizedData1 = utils.normalizeData(actualRatioToWinPlayer1, 0, 200)
-
-    console.log("p0 : " + normalizedData0)
-    console.log("p1 : " + normalizedData1)
     
-    if (normalizedData0 <= normalizedData1) {
+    console.log('---Data Normalizada--')
+    console.log(playersSelectedToFight[0].twitter.screen_name + " " + normalizedData0)
+    console.log(playersSelectedToFight[1].twitter.screen_name +" " + normalizedData1)
+    
+    console.log('--- Ratio global tras aplicar defensa ---');
+    console.log(ratioStrengthPlayer0 + " Jugador:" + playersSelectedToFight[0].twitter.screen_name)
+    console.log(ratioStrengthPlayer1 + " Jugador:" + playersSelectedToFight[1].twitter.screen_name)
+
+    if (normalizedData0 >= normalizedData1) {
         let dbToSave = setActualDataBase(playersSelectedToFight[0],playersSelectedToFight[1])
-        utils.saveDB(dbToSave)
+        //utils.saveDB(dbToSave)
+        if(playersSelectedToFight[1].luck >= utils.getRandomIntBeetweenNumbers(0,100)){
+            console.log("SUERTUDO AQUI CAMBIANDO GANADORES")
+            return {
+                "winner": playersSelectedToFight[1].twitter.screen_name,
+                "losser": playersSelectedToFight[0].twitter.screen_name
+            }
+        }
         return {
             "winner": playersSelectedToFight[0].twitter.screen_name,
             "losser": playersSelectedToFight[1].twitter.screen_name
         }
-        /*if(playersSelectedToFight[0].luck >= utils.getRandomIntBeetweenNumbers(0,100)){}*/
     } else {
         let dbToSave = setActualDataBase(playersSelectedToFight[1],playersSelectedToFight[0])
-        utils.saveDB(dbToSave)
+        //utils.saveDB(dbToSave)
+        if(playersSelectedToFight[0].luck >= utils.getRandomIntBeetweenNumbers(0,100)){
+            console.log("SUERTUDO AQUI CAMBIANDO GANADORES")
+            return {
+                "winner": playersSelectedToFight[0].twitter.screen_name,
+                "losser": playersSelectedToFight[1].twitter.screen_name
+            }
+        }
         return {
             "winner": playersSelectedToFight[1].twitter.screen_name,
             "losser": playersSelectedToFight[0].twitter.screen_name
@@ -149,7 +192,6 @@ function uploadImageTwitter(post){
         let altText = "Ganador y perdedor"
         let meta_params = { "media_id": mediaIdStr, "alt_text":{"text" : altText} }
 
-
         T.post('media/metadata/create', meta_params, (err,data,response) =>{
             if(!err){
                 let params = { "status" : post, media_ids:[mediaIdStr] }
@@ -166,13 +208,43 @@ function uploadImageTwitter(post){
 
 (async () => {
     let dataFromTwitter = await populateActualPlayers();
-    actualPlayers = dataFromTwitter
-    let playersToFight = battle()
+    actualPlayers = dataFromTwitter; //path
     
-    await createImage.ProcessAll(getDataFromDb(playersToFight.winner).twitter.profile_image_url, getDataFromDb(playersToFight.losser).twitter.profile_image_url, getDataFromDb(playersToFight.winner).twitter.screen_name, getDataFromDb(playersToFight.losser).twitter.screen_name, () => {
-        uploadImageTwitter(`El ganador es ${getDataFromDb(playersToFight.winner).twitter.screen_name}, El perdedor es ${getDataFromDb(playersToFight.losser).twitter.screen_name}`)
-        console.log(`El ganador es ${getDataFromDb(playersToFight.winner).twitter.screen_name}\nEl perdedor es ${getDataFromDb(playersToFight.losser).twitter.screen_name}`)
-        console.log("Picture created.")
-    })
+    
+    setInterval(() => {
+        let now = new Date();
+        let hour = now.getHours();
+        let minute = now.getMinutes();
+        let canIDoTheActions = timeManager.checkIfWeAreInTime(hour,minute);
+        //console.log(`son las ${hour}:${minute}. Mi permiso para hacer la acción es: ${canIDoTheActions}`)
+        
+        if(/*canIDoTheActions*/ 1 == 1){
+            let actualAlivePlayers = getAlivePlayers()
+            if(actualAlivePlayers.length == 1){
+                //MOSTRAR BANADOR
+            }else{
+                //AQUI PASA LAS BATALLAS NORMALES MIENTRAS EXISTAN 2
+            }
+
+
+            let playersToFight = battle()
+            console.log(playersToFight)
+            console.log("ganador :" + playersToFight.winner)
+            console.log("perdedor :" + playersToFight.losser)
+            /*await createImage.ProcessAll(getDataFromDb(playersToFight.winner).twitter.profile_image_url, getDataFromDb(playersToFight.losser).twitter.profile_image_url, getDataFromDb(playersToFight.winner).twitter.screen_name, getDataFromDb(playersToFight.losser).twitter.screen_name, () => {
+                setTimeout(() => {
+                    uploadImageTwitter(`El ganador es ${getDataFromDb(playersToFight.winner).twitter.screen_name}, El perdedor es ${getDataFromDb(playersToFight.losser).twitter.screen_name}`)
+                }, 4000);
+                console.log(`El ganador es ${getDataFromDb(playersToFight.winner).twitter.screen_name}\nEl perdedor es ${getDataFromDb(playersToFight.losser).twitter.screen_name}`)
+                console.log("Picture created.")
+            })*/
+        }
+        console.log('\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n')
+    }, 1000);
+    setInterval(async() => {
+    
+    }, 60000);
+
+
 
 })();
