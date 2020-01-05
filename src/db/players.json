@@ -5,34 +5,34 @@
             "alive": true,
             "luck": 1,
             "strength": 80,
-            "defense" : [0,40],
+            "defense" : [10,11],
             "kills" : 1,
             "team" : "Rojo"
         },
         {
             "name": "Rubiu5",
-            "alive": true,
+            "alive": false,
             "luck": 12,
             "strength": 60,
-            "defense" : [0,40],
+            "defense" : [10,40],
             "kills" : 1,
             "team" : "Rojo"
         },
         {
             "name": "LOLiTOFDEZ",
-            "alive": true,
-            "luck": 80,
+            "alive": false,
+            "luck": 2,
             "strength": 50,
-            "defense" : [0,40],
+            "defense" : [10,40],
             "kills" : 1,
             "team" : "Verde"
         },
         {
             "name": "mangelrogel",
             "alive": true,
-            "luck": 8,
+            "luck": 101,
             "strength": 20,
-            "defense" : [0,40],
+            "defense" : [1,2],
             "kills" : 1,
             "team" : "Verde"
         }

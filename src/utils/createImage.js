@@ -85,13 +85,16 @@ async function downloadIMG(urlImg,pushToArray){
 }
 
 async function ProcessAll(urlImageWinner,urlImageLosser,userTwitterWinner,userTwitterLosser,cb){
+    return new Promise(async(resolve,reject) => {
+    
     await downloadIMG(convertPhotoUrlTo400x400(urlImageWinner),datos)
     await downloadIMG(convertPhotoUrlTo400x400(urlImageLosser),datos)
     await createImage(datos[0].filepath,datos[1].filepath,userTwitterWinner,userTwitterLosser,function(){
         deleteAllDownloadedImages('./tmpAssets')
     })
     datos = []
-    cb();
+        resolve(true);
+    })
 }
 
 function deleteAllDownloadedImages(directory){
