@@ -1,5 +1,10 @@
 const utils = require('../utils/utils');
 
+/*  ToDo:
+    [ ]Check if we want to use "Normalized" data
+*/
+
+
 class Player {
     constructor(userTwitter, alive, luck, strength, kills, name, defenseRange){
         this.twitter = userTwitter,
@@ -23,29 +28,23 @@ class Player {
     getBonusPerKill(bonus){
         let actualBonusPreKills = this.kills * bonus
         this.ratioToWin += actualBonusPreKills;
+        this.tempRatioToWin = this.ratioToWin
         return actualBonusPreKills;
     }
 
     getStrength(ValueToNormalize){
-        let actualStrength = this.strength / ValueToNormalize;
+        let actualStrength = this.strength ;
         this.ratioToWin = actualStrength;
         return actualStrength;
     }
 
     getInjured(dmgFromEnemy,ValueToNormalize){
-        console.log("DMGCOOMING" + dmgFromEnemy)
-        this.tempRatioToWin = this.ratioToWin
         this.defineRandomDefense();
-        let actualDamageRecived =  dmgFromEnemy - (this.defense / ValueToNormalize) 
-        console.log(`actual recived DMG ${this.name} : ${actualDamageRecived}`)
-        console.log(dmgFromEnemy +"dmgenemy")
-        console.log(this.defense +"defnese")
-        console.log(ValueToNormalize +"normalizas")
-
-        /*if(actualDamageRecived < 0){
+        let actualDamageRecived =  dmgFromEnemy - this.defense
+        if(actualDamageRecived < 0){
             actualDamageRecived = 0
-        }*/
-        this.ratioToWin = this.ratioToWin - actualDamageRecived;
+        }
+        this.ratioToWin = Math.abs(this.ratioToWin - actualDamageRecived);
         return actualDamageRecived;
     }
 

@@ -5,7 +5,7 @@
             "alive": true,
             "luck": 1,
             "strength": 80,
-            "defense" : [10,40],
+            "defenseRange" : [10,40],
             "kills" : 1,
             "team" : "Rojo"
         },
@@ -14,7 +14,7 @@
             "alive": true,
             "luck": 12,
             "strength": 60,
-            "defense" : [10,40],
+            "defenseRange" : [10,40],
             "kills" : 1,
             "team" : "Rojo"
         },
@@ -23,7 +23,7 @@
             "alive": true,
             "luck": 80,
             "strength": 50,
-            "defense" : [10,40],
+            "defenseRange" : [10,40],
             "kills" : 1,
             "team" : "Verde"
         },
@@ -32,7 +32,7 @@
             "alive": true,
             "luck": 8,
             "strength": 20,
-            "defense" : [10,40],
+            "defenseRange" : [10,40],
             "kills" : 1,
             "team" : "Verde"
         }

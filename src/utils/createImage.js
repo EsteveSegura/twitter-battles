@@ -9,35 +9,35 @@ const defaultErrorAvatarPicture = 'https://ktva.images.worldnow.com/images/16098
 
 let datos = []
 
-function convertPhotoUrlTo400x400(url){
-    if(url != null){
-        if(!url.includes("400x400")){
+function convertPhotoUrlTo400x400(url) {
+    if (url != null) {
+        if (!url.includes("400x400")) {
             return url.replace("_normal", "_400x400");
-        }else{
+        } else {
             return url
         }
-    }else{
+    } else {
         return defaultErrorAvatarPicture
     }
 }
 
-async function createImage(imgWinner,imgLosser,userTwitterWinner,userTwitterLosser,cb){
-    if(imgWinner == null){
+async function createImage(imgWinner, imgLosser, userTwitterWinner, userTwitterLosser, cb) {
+    if (imgWinner == null) {
         imgWinner = './assets/placeholder.png'
     }
-    if(imgLosser == null){
+    if (imgLosser == null) {
         imgLosser = './assets/placeholder.png'
     }
-    let img = ['./assets/background.png','./assets/lose.png',imgWinner,imgLosser];
+    let img = ['./assets/background.png', './assets/lose.png', imgWinner, imgLosser];
     let jimps = [];
 
-    for(let i = 0 ; i < img.length;i++){
+    for (let i = 0; i < img.length; i++) {
         jimps.push(jimp.read(img[i]))
     }
 
-    Promise.all(jimps).then(async function(data){
+    Promise.all(jimps).then(async function (data) {
         return Promise.all(jimps);
-    }).then(async function(data){
+    }).then(async function (data) {
         await jimp.loadFont(jimp.FONT_SANS_32_BLACK).then(function (font) {
             //Winner
             data[0].print(font, 198, 600, {
@@ -51,24 +51,24 @@ async function createImage(imgWinner,imgLosser,userTwitterWinner,userTwitterLoss
                 alignmentX: jimp.HORIZONTAL_ALIGN_CENTER
             }, 400, 400);
         })
-        
+
         await data[2].resize(400, 400)
         await data[3].resize(400, 400)
-        
-        await data[0].composite(data[2],198,198)//Winer
-        await data[0].composite(data[3].greyscale(), 990,198)//Loser
-        await data[0].composite(data[1],1,1)//X de losser
 
-        await data[0].write('./uploads/upload.png', function(){
+        await data[0].composite(data[2], 198, 198)//Winer
+        await data[0].composite(data[3].greyscale(), 990, 198)//Loser
+        await data[0].composite(data[1], 1, 1)//X de losser
+
+        await data[0].write('./uploads/upload.png', function () {
             cb()
         })
     });
 }
 
-async function downloadIMG(urlImg,pushToArray){
+async function downloadIMG(urlImg, pushToArray) {
     const options = {
         url: urlImg,
-        dest: './tmpAssets/'                  
+        dest: './tmpAssets/'
     }
 
     try {
@@ -84,28 +84,28 @@ async function downloadIMG(urlImg,pushToArray){
     }
 }
 
-async function ProcessAll(urlImageWinner,urlImageLosser,userTwitterWinner,userTwitterLosser,cb){
-    return new Promise(async(resolve,reject) => {
-    
-    await downloadIMG(convertPhotoUrlTo400x400(urlImageWinner),datos)
-    await downloadIMG(convertPhotoUrlTo400x400(urlImageLosser),datos)
-    await createImage(datos[0].filepath,datos[1].filepath,userTwitterWinner,userTwitterLosser,function(){
-        deleteAllDownloadedImages('./tmpAssets')
-    })
-    datos = []
+async function ProcessAll(winner, losser, cb) {
+    return new Promise(async (resolve, reject) => {
+
+        await downloadIMG(convertPhotoUrlTo400x400(winner.twitter.profile_image_url), datos)
+        await downloadIMG(convertPhotoUrlTo400x400(losser.twitter.profile_image_url), datos)
+        await createImage(datos[0].filepath, datos[1].filepath, winner.twitter.screen_name, losser.twitter.screen_name, function () {
+            deleteAllDownloadedImages('./tmpAssets')
+        })
+        datos = []
         resolve(true);
     })
 }
 
-function deleteAllDownloadedImages(directory){
+function deleteAllDownloadedImages(directory) {
     fs.readdir(directory, (err, files) => {
-    if (err) throw err;
-
-    for (const file of files) {
-        fs.unlink(path.join(directory, file), err => {
         if (err) throw err;
-        });
-    }
+
+        for (const file of files) {
+            fs.unlink(path.join(directory, file), err => {
+                if (err) throw err;
+            });
+        }
     });
 }
 
